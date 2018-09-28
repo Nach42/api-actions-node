@@ -1,0 +1,38 @@
+{
+  "actions": [
+    {
+      "description": "Default Welcome Intent",
+      "name": "MAIN",
+      "fulfillment": {
+        "conversationName": "conv"
+      },
+      "intent": {
+        "name": "actions.intent.MAIN",
+        "trigger": {
+          "queryPatterns": [
+            "talk to my test app",
+            "talk to Dr. Pepe",
+            "talk to doctor Pepe"
+          ]
+        }
+      }
+    },
+    {
+      "description": "Everything Else Intent",
+      "name": "allElse",
+      "fulfillment": {
+        "conversationName": "conv"
+      },
+      "intent": {
+        "name": "actions.intent.TEXT"
+      }
+    }
+  ],
+  "conversations": {
+    "conv": {
+      "name": "conv",
+      "url": "https://api-google-node.herokuapp.com/text"
+    }
+  },
+  "locale": "en"
+}
