@@ -31,7 +31,7 @@
   "conversations": {
     "conv": {
       "name": "conv",
-      "url": "https://api-google-node.herokuapp.com/text"
+      "url": "https://api-actions-node.herokuapp.com/text"
     }
   },
   "locale": "en"
