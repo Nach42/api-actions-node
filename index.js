@@ -31,7 +31,7 @@ app.intent('actions.intent.MAIN', conv => {
         speech: 'Hi, How is it going?'
     }));
 });
-
+//Accion para la lista
 app.intent('actions.intent.OPTION', (conv, params, option) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
     var userId = conv.body.user.userId;
