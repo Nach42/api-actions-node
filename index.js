@@ -32,7 +32,7 @@ app.intent('actions.intent.MAIN', conv => {
     }));
 });
 
-/*app.intent('actions.intent.OPTION', (conv, params, option) => {
+app.intent('actions.intent.OPTION', (conv, params, option) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
     var userId = conv.body.user.userId;
     console.log('entra en options');
@@ -56,7 +56,7 @@ app.intent('actions.intent.MAIN', conv => {
             speech: error.error
         }));
     });
-});*/
+});
 
 app.intent('actions.intent.MEDIA_STATUS', conv => {
     console.log('entra en media status');
@@ -71,13 +71,13 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
-            /*if(response.list && listResponse){
+            if(response.list && listResponse){
                 conv.ask(response.ask);
                 conv.ask(response.suggestions);
                 conv.ask(response.list);    
-            }else{*/
+            }else{
                 conv.ask(response);
-            //}
+            }
         }
     } else {
         conv.close(`No hay respuestas`);
@@ -139,7 +139,7 @@ var buildResponse = function(media){
         });
     }
     else if(!media){
-        /*if(message.choices){
+        if(message.choices){
             var title = message.text;
             var choices = message.choices;
             var items = {};
@@ -154,12 +154,12 @@ var buildResponse = function(media){
                 title: title,
                 items: items
             });
-        }else{*/
+        }else{
             response = new SimpleResponse({
                 text: message.text,
                 speech: message.text
             }); 
-        //}    
+        }    
         message = null;
     }
     return response;
