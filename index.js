@@ -61,7 +61,7 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
 app.intent('actions.intent.MEDIA_STATUS', conv => {
     console.log('entra en media status');
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
-    //const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
+    const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
         var response = null;
         if(!message){
