@@ -183,6 +183,6 @@ express_app.post('/webhook', bodyParser.json(), (req, res)=>{
 
 express_app.post('/text', app);
 
-express_app.listen(8080, ()=>{
+express_app.listen(process.env.PORT || 8080, ()=>{
     console.log('Corriendo en puerto 8080');
 });
