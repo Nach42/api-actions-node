@@ -22,7 +22,7 @@ var metadata = {
     channelSecretKey: '0pfWWal6QabPCFjdXweAgkHeH7KPs970',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/E7A528F6-660F-425A-87B6-DA39B768FA69'
 };
-var message = null;
+var message = [];
 
 app.intent('actions.intent.MAIN', conv => {
     console.log('entra en main');
@@ -89,7 +89,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
     var userId = conv.body.user.userId;
     return talkToChat(input, userId).then(function (value){
-        if(message){
+        if(message.length > 0){
             conv.ask(buildResponse(false));
         }else if(hasMediaPlayback){
 
@@ -139,9 +139,10 @@ var buildResponse = function(media){
         });
     }
     else if(!media){
-        if(message.choices){
-            var title = message.text;
-            var choices = message.choices;
+        var msg = message[0];
+        if(msg.choices){
+            var title = msg.text;
+            var choices = msg.choices;
             var items = {};
             for (var i = 0; i < choices.length; i++) {
                 items[choices[i]] = {
@@ -155,18 +156,21 @@ var buildResponse = function(media){
                 items: items
             });
         }else{
-            response = new SimpleResponse({
-                text: message.text,
-                speech: message.text
-            }); 
+            for (var i = 0; i < message.length; i++) {
+                var msg = message[i];
+                response = new SimpleResponse({
+                    text: msg.text,
+                    speech: msg.text
+                });
+            }
         }    
-        message = null;
+        message = [];
     }
     return response;
 };
     
 express_app.post('/webhook', bodyParser.json(), (req, res)=>{
-    message = req.body;
+    message.push(req.body);
 	const userId = req.body.userId;
 
 	if (!userId) {
