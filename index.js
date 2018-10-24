@@ -19,8 +19,8 @@ express_app.use(bodyParser.json());
 
 var metadata = {
     waitForMoreResponsesMs: 500,
-    channelSecretKey: '0pfWWal6QabPCFjdXweAgkHeH7KPs970',
-    channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/E7A528F6-660F-425A-87B6-DA39B768FA69'
+    channelSecretKey: 'kZMeDx7KxtGKhWrebWanhRhHvyrzOfwQ',
+    channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
 var message = null;
 
