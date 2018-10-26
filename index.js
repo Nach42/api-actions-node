@@ -10,9 +10,10 @@ const {
     SimpleResponse,
     Suggestions,
     List,
+    SignIn,
     Image
 } = require('actions-on-google');
-var app = actionssdk();
+var app = actionssdk({clientId: '538506846675-koeib2bosg44cjmraqbfbaq638q5mqnb.apps.googleusercontent.com'});
 var express_app = express();
 express_app.use(bodyParser.urlencoded({extended: true}));
 express_app.use(bodyParser.json());
@@ -25,23 +26,31 @@ var metadata = {
 var message = null;
 
 app.intent('actions.intent.MAIN', conv => {
-    console.log('entra en main');
-    conv.ask(new SimpleResponse({
-        text: 'Hi, How is it going?',
-        speech: 'Hi, How is it going?'
-    }));
+    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
+    if(screen){
+        conv.ask(new SignIn());
+    }
+});
+
+app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
+    if (signin.status === 'OK') {
+        const payload = conv.user.profile.payload;
+        conv.ask(`I got your account details, ${payload.name}. What do you want to do next?`)
+    } else {
+        conv.ask(`I won't be able to save your data, but what do you want to do next?`)
+    }
 });
 
 app.intent('actions.intent.OPTION', (conv, params, option) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
-    var userId = conv.body.user.userId;
-    console.log('entra en options');
+    var userId = conv.user.profile.payload.email;
     return talkToChat(option, userId).then(function (value){
         if(message){
             conv.ask(buildResponse(false));
         }else if(hasMediaPlayback){
-            conv.ask("Media Response from Option intent");
-            conv.ask(buildResponse(true));
+            var response = buildResponse(true);
+            conv.ask(" ");
+            conv.ask(response);
             conv.ask(new Suggestions(['hi']));
         }else{
             conv.ask(new SimpleResponse({
@@ -59,7 +68,6 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
 });
 
 app.intent('actions.intent.MEDIA_STATUS', conv => {
-    console.log('entra en media status');
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
     const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
@@ -85,16 +93,15 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
 });
 
 app.intent('actions.intent.TEXT', (conv, input) => {
-    console.log('entra en text');
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
-    var userId = conv.body.user.userId;
+    var userId = conv.user.profile.payload.email;
     return talkToChat(input, userId).then(function (value){
         if(message){
             conv.ask(buildResponse(false));
         }else if(hasMediaPlayback){
-
+            var response = buildResponse(true);
             conv.ask(" ");
-            conv.ask(buildResponse(true));
+            conv.ask(response);
             conv.ask(new Suggestions(['hi']));
         }else{
             conv.ask(new SimpleResponse({
@@ -126,7 +133,6 @@ var talkToChat = function(input, userId){
         }else{
             reject({"error": "userId or input is wrong."});
         }
-        
     });
 };
 
@@ -142,18 +148,25 @@ var buildResponse = function(media){
         if(message.choices){
             var title = message.text;
             var choices = message.choices;
-            var items = {};
-            for (var i = 0; i < choices.length; i++) {
-                items[choices[i]] = {
-                    title: choices[i] 
+            if(choices.length > 1){
+                var items = {};
+                for (var i = 0; i < choices.length; i++) {
+                    items[choices[i]] = {
+                        title: choices[i] 
+                    };
                 };
-            };
-            response.ask = 'Choose an option from the list';
-            response.suggestions = new Suggestions(['hi']);
-            response.list = new List({
-                title: title,
-                items: items
-            });
+                response.ask = title;
+                response.suggestions = new Suggestions(['hi']);
+                response.list = new List({
+                    title: title,
+                    items: items
+                });
+            }else{
+                response = new SimpleResponse({
+                    text: choices[0],
+                    speech: choices[0]
+                });
+            }            
         }else{
             response = new SimpleResponse({
                 text: message.text,
@@ -166,14 +179,13 @@ var buildResponse = function(media){
 };
     
 express_app.post('/webhook', bodyParser.json(), (req, res)=>{
-    message = req.body;
-	const userId = req.body.userId;
-
-	if (!userId) {
-        return res.status(400).send('Missing User ID');
-    }
     if (webhook.verifyMessageFromBot(req.get('X-Hub-Signature'), req.body, metadata.channelSecretKey)) {
         console.log("todo bien");
+        message = req.body;
+        const userId = req.body.userId;
+        if (!userId) {
+            return res.status(400).send('Missing User ID');
+        }
         res.sendStatus(200);
     } else {
         console.log("Todo mal");
