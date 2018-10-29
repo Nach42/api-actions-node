@@ -20,7 +20,7 @@ express_app.use(bodyParser.json());
 
 var metadata = {
     waitForMoreResponsesMs: 500,
-    channelSecretKey: 'kZMeDx7KxtGKhWrebWanhRhHvyrzOfwQ',
+    channelSecretKey: '2ngdurGTGYRMW6dc5zfPwQlMmNtFhiE4',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
 var message = null;
@@ -179,6 +179,8 @@ var buildResponse = function(media){
 };
     
 express_app.post('/webhook', bodyParser.json(), (req, res)=>{
+    message = req.body;
+    console.log(message);
     if (webhook.verifyMessageFromBot(req.get('X-Hub-Signature'), req.body, metadata.channelSecretKey)) {
         console.log("todo bien");
         message = req.body;

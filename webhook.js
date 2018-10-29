@@ -48,7 +48,8 @@ function messageToBot(channelUrl, channelSecretKey, userId, input, callback) {
                 console.log('err: '+err);
                 callback(null);
             } else {
-                console.log('Mensaje enviado: ' + JSON.stringify(body));
+                console.log('Mensaje enviado: ' + JSON.stringify(err));
+                console.log('Mensaje enviado 2: ' + JSON.stringify(res));
                 callback({"msg": "OK"});
             }
         }

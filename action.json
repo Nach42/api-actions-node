@@ -31,7 +31,7 @@
   "conversations": {
     "conv": {
       "name": "conv",
-      "url": "https://api-actions-node.herokuapp.com/text"
+      "url": "https://0107298b.ngrok.io/text"
     }
   },
   "locale": "en"
