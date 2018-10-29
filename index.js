@@ -35,7 +35,7 @@ app.intent('actions.intent.MAIN', conv => {
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
         const payload = conv.user.profile.payload;
-        conv.ask(`I got your account details, ${payload.name}. What do you want to do next?`)
+        conv.ask(`Hi ${payload.name}. What do you want to do next?`)
     } else {
         conv.ask(`I won't be able to save your data, but what do you want to do next?`)
     }
