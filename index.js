@@ -26,6 +26,7 @@ var metadata = {
 var message = null;
 
 app.intent('actions.intent.MAIN', conv => {
+    console.log("Main");
     const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
     if(screen){
         conv.ask(new SignIn());
