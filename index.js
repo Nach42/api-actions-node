@@ -81,7 +81,6 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             response = buildResponse(false);
             if(response.list && listResponse){
                 conv.ask(response.ask);
-                conv.ask(response.suggestions);
                 conv.ask(response.list);    
             }else{
                 conv.ask(response);
