@@ -33,10 +33,6 @@ app.intent('actions.intent.MAIN', conv => {
     //}
 });
 
-app.intent('actions.intent.NEW_SURFACE', conv => {
-    console.log("New surface");
-});
-
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
         const payload = conv.user.profile.payload;
@@ -81,7 +77,6 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             response = buildResponse(true);
             conv.ask(" ");
             conv.ask(response);
-            conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
             if(response.list && listResponse){
