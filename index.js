@@ -44,17 +44,13 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
 
 app.intent('actions.intent.OPTION', (conv, params, option) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
-    const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    const listResponseAvailable = conv.availableSurfacesCapabilities.has('actions.capability.SCREEN_OUTPUT');
     var userId = conv.user.profile.payload.email;
     return talkToChat(option, userId).then(function (value){
         if(message){
             var response = buildResponse(false);
-            if(response.list && listResponse){
+            if(response.list){
                 conv.ask(response.ask);
                 conv.ask(response.list);
-            }else if(listResponseAvailable){
-                console.log('list responseeeeeeeeeee');
             }else{
                 conv.ask(response);
             }
@@ -81,7 +77,6 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
 app.intent('actions.intent.MEDIA_STATUS', conv => {
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
     const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    const listResponseAvailable = conv.availableSurfacesCapabilities.has('actions.capability.SCREEN_OUTPUT');
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
         var response = null;
         if(!message){
@@ -91,11 +86,9 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
-            if(response.list && listResponse){
+            if(response.list){
                 conv.ask(response.ask);
                 conv.ask(response.list);
-            }else if(listResponseAvailable){
-                console.log('listas siiiii');
             }else{
                 conv.ask(response);
             }
