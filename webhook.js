@@ -20,6 +20,7 @@ function verifyMessageFromBot(signature, msgBody, secretKey) {
 
 function buildSignatureHeader(buf, secret) {
     var msg_signature = buildSignature(buf, secret);
+    console.log(msg_signature);
     return msg_signature;
 }
 function buildSignature(buf, secret) {
