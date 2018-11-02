@@ -77,6 +77,7 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             response = buildResponse(true);
             conv.ask(" ");
             conv.ask(response);
+            conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
             if(response.list && listResponse){
@@ -101,6 +102,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             var response = buildResponse(true);
             conv.ask(" ");
             conv.ask(response);
+            conv.ask(new Suggestions(['hi']));
         }else{
             conv.ask(new SimpleResponse({
                 text: "Mala suerte",
