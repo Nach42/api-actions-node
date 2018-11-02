@@ -28,9 +28,13 @@ var message = null;
 app.intent('actions.intent.MAIN', conv => {
     console.log("Main");
     const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    if(screen){
+    //if(screen){
         conv.ask(new SignIn());
-    }
+    //}
+});
+
+app.intent('actions.intent.NEW_SURFACE', conv => {
+    console.log("New surface");
 });
 
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
