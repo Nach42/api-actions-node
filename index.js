@@ -180,8 +180,6 @@ var buildResponse = function(media){
 };
     
 express_app.post('/webhook', bodyParser.json(), (req, res)=>{
-    message = req.body;
-    console.log(message);
     if (webhook.verifyMessageFromBot(req.get('X-Hub-Signature'), req.body, metadata.channelSecretKey)) {
         console.log("todo bien");
         message = req.body;
