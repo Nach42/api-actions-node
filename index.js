@@ -47,7 +47,13 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
     var userId = conv.user.profile.payload.email;
     return talkToChat(option, userId).then(function (value){
         if(message){
-            conv.ask(buildResponse(false));
+            var response = buildResponse(false);
+            if(response.list){
+                conv.ask(response.ask);
+                conv.ask(response.list);
+            }else{
+                conv.ask(response);
+            }
         }else if(hasMediaPlayback){
             var response = buildResponse(true);
             conv.ask(" ");
@@ -156,7 +162,6 @@ var buildResponse = function(media){
                     };
                 };
                 response.ask = title;
-                response.suggestions = new Suggestions(['hi']);
                 response.list = new List({
                     title: title,
                     items: items
