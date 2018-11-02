@@ -29,7 +29,10 @@ app.intent('actions.intent.MAIN', conv => {
     console.log("Main");
     const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
     if(screen){
-        conv.ask(new SignIn());
+        conv.ask(new SimpleResponse({
+            text: new SignIn(),
+            speech: new SignIn()
+        }));
     }
 });
 
