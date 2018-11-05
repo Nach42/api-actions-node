@@ -154,7 +154,7 @@ app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
             conv.ask(queue.list);
         }
     } else {
-        var list = queue.list;
+        var list = queue.list.inputValueData.listSelect.items;
         console.log(list);
         conv.ask(`Ok, I can't show you the choices`);
         conv.ask(queue.ask);
