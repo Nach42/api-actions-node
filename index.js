@@ -159,12 +159,12 @@ app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
         for (var i = 0; i < list.length; i++) {
             choices += list[i].optionInfo.key+", ";
         }
-        console.log(choices);
-        conv.ask(`Ok, I can't show you the choices`);
+        choices = choices.substring(0, choices.length - 1);
         conv.ask(queue.ask);
+        conv.ask(choices);
     }
     queue = null;
-  });
+});
 
 var talkToChat = function(input, userId){
     return new Promise(function (resolve, reject){
