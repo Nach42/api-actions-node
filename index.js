@@ -76,7 +76,9 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
 
 app.intent('actions.intent.MEDIA_STATUS', conv => {
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
-    const listResponse = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
+    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
+    const availableScreen = conv.availableSurfacesCapabilities.has('actions.capability.SCREEN_OUTPUT');
+    console.log("screen "+availableScreen);
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
         var response = null;
         if(!message){
@@ -86,9 +88,11 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
-            if(response.list){
+            if(response.list && screen){
                 conv.ask(response.ask);
                 conv.ask(response.list);
+            }else if(availableScreen){
+                console.log("hay dispositivos con pantalla");
             }else{
                 conv.ask(response);
             }
