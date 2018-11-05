@@ -149,11 +149,15 @@ app.intent('actions.intent.TEXT', (conv, input) => {
 
 app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
     if (newSurface.status === 'OK') {
-        conv.ask(queue.ask);
-        conv.ask(queue.list);
+        if(queue.list){
+            conv.ask(queue.ask);
+            conv.ask(queue.list);
+        }
     } else {
-      conv.ask(`Ok, I can't show you the choices`);
-      conv.ask(queue.ask);
+        var list = queue.list.items;
+        console.log(list);
+        conv.ask(`Ok, I can't show you the choices`);
+        conv.ask(queue.ask);
     }
     queue = null;
   });
