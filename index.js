@@ -53,14 +53,16 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
                 if(screen){
                     conv.ask(response.ask);
                     conv.ask(response.list);
-                }else if(availableScreen){
+                /*}else if(availableScreen){
                     queue = response;
                     var context = "I have some choices for you";
                     var notification = 'Choices';
                     var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));
+                    conv.ask(new NewSurface({context, notification, capabilities}));*/
                 }else{
-                    conv.ask(response.ask);
+                    var list = speechList(response);
+                    conv.ask(list.ask);
+                    conv.ask(list.choices);
                 }
             }else{
                 conv.ask(response);
@@ -102,14 +104,16 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
                 if(screen){
                     conv.ask(response.ask);
                     conv.ask(response.list);
-                }else if(availableScreen){
+                /*}else if(availableScreen){
                     queue = response;
                     var context = "I have some choices for you";
                     var notification = 'Choices';
                     var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));
+                    conv.ask(new NewSurface({context, notification, capabilities}));*/
                 }else{
-                    conv.ask(response.ask);
+                    var list = speechList(response);
+                    conv.ask(list.ask);
+                    conv.ask(list.choices);
                 }
             }
             else{
@@ -147,25 +151,18 @@ app.intent('actions.intent.TEXT', (conv, input) => {
     });
 });
 
-app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
-    if (newSurface.status === 'OK') {
-        if(queue.list){
-            conv.ask(queue.ask);
-            conv.ask(queue.list);
-        }
-    } else {
-        var list = queue.list.inputValueData.listSelect.items;
-        var choices = "";
-        for (var i = 0; i < list.length; i++) {
-            choices += list[i].optionInfo.key+", ";
-        }
-        choices = choices.substring(0, choices.length - 2);
-        console.log(choices);
-        conv.ask(queue.ask);
-        conv.ask(choices);
+var speechList = function(response){
+    var list = response.list.inputValueData.listSelect.items;
+    var res = {};
+    var choices = "";
+    for (var i = 0; i < list.length; i++) {
+        choices += list[i].optionInfo.key+", ";
     }
-    queue = null;
-});
+    choices = choices.substring(0, choices.length - 2);
+    res.ask = response.ask;
+    res.choices = choices;
+    return res;
+};
 
 var talkToChat = function(input, userId){
     return new Promise(function (resolve, reject){
