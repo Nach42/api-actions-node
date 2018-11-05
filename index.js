@@ -11,6 +11,7 @@ const {
     Suggestions,
     List,
     SignIn,
+    NewSurface,
     Image
 } = require('actions-on-google');
 var app = actionssdk({clientId: '538506846675-koeib2bosg44cjmraqbfbaq638q5mqnb.apps.googleusercontent.com'});
