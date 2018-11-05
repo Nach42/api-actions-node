@@ -1,3 +1,4 @@
 {
-    "welcome": "¿Qué pasa %s?"
+    "welcome": "Hola %s. ¿Qué quieres hacer a continuación? Si no cómo empezar, puedes preguntar: ¿Qué hacer?",
+    "NotWelcome": "Necesitas iniciar sesión para continuar"
 }

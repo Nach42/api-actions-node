@@ -44,7 +44,8 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
         //conv.ask(`Hi ${payload.name}. What do you want to do next?`)
         conv.ask(i18n.__("welcome", payload.name));
     } else {
-        conv.ask(`I won't be able to save your data, but what do you want to do next?`)
+        conv.ask(i18n.__("NotWelcome"))
+        conv.ask(new SignIn())
     }
 });
 
