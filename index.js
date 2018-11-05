@@ -160,6 +160,7 @@ app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
             choices += list[i].optionInfo.key+", ";
         }
         choices = choices.substring(0, choices.length - 1);
+        console.log(choices);
         conv.ask(queue.ask);
         conv.ask(choices);
     }
