@@ -25,6 +25,7 @@ var metadata = {
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
 var message = null;
+var queue = null;
 
 app.intent('actions.intent.MAIN', conv => {
     console.log("Main");
@@ -45,13 +46,25 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
 
 app.intent('actions.intent.OPTION', (conv, params, option) => {
     const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
+    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
+    const availableScreen = conv.available.surfaces.capabilities.has('actions.capability.SCREEN_OUTPUT');
     var userId = conv.user.profile.payload.email;
     return talkToChat(option, userId).then(function (value){
         if(message){
             var response = buildResponse(false);
             if(response.list){
-                conv.ask(response.ask);
-                conv.ask(response.list);
+                if(screen){
+                    conv.ask(response.ask);
+                    conv.ask(response.list);
+                }else if(availableScreen){
+                    queue = response;
+                    var context = "I have some choices for you";
+                    var notification = 'Choices';
+                    var capabilities = ['actions.capability.SCREEN_OUTPUT'];
+                    conv.ask(new NewSurface({context, notification, capabilities}));
+                }else{
+                    conv.ask(response.ask);
+                }
             }else{
                 conv.ask(response);
             }
@@ -93,7 +106,8 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
                     conv.ask(response.ask);
                     conv.ask(response.list);
                 }else if(availableScreen){
-                    var context = response.ask;
+                    queue = response;
+                    var context = "I have some choices for you";
                     var notification = 'Choices';
                     var capabilities = ['actions.capability.SCREEN_OUTPUT'];
                     conv.ask(new NewSurface({context, notification, capabilities}));
@@ -127,7 +141,6 @@ app.intent('actions.intent.TEXT', (conv, input) => {
                 speech: "Mala suerte"
             }));   
         }
-        
     }).catch(function(error){
         console.log(error);
         conv.ask(new SimpleResponse({
@@ -139,11 +152,12 @@ app.intent('actions.intent.TEXT', (conv, input) => {
 
 app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
     if (newSurface.status === 'OK') {
-        console.log(input);
-      conv.close("Muy bien");
+        conv.ask(queue.ask);
+        conv.ask(queue.list);
     } else {
-      conv.close(`Ok, I understand. You don't want to see pictures. Bye`);
+      conv.close(`Ok, I can't show you the choices`);
     }
+    queue = null;
   });
 
 var talkToChat = function(input, userId){
