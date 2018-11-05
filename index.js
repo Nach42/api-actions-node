@@ -29,10 +29,7 @@ var queue = null;
 
 app.intent('actions.intent.MAIN', conv => {
     console.log("Main");
-    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    //if(screen){
-        conv.ask(new SignIn());
-    //}
+    conv.ask(new SignIn());
 });
 
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
@@ -155,7 +152,7 @@ app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
         conv.ask(queue.ask);
         conv.ask(queue.list);
     } else {
-      conv.close(`Ok, I can't show you the choices`);
+      conv.ask(`Ok, I can't show you the choices`);
     }
     queue = null;
   });
