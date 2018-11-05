@@ -153,6 +153,7 @@ app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
         conv.ask(queue.list);
     } else {
       conv.ask(`Ok, I can't show you the choices`);
+      conv.ask(queue.ask);
     }
     queue = null;
   });
