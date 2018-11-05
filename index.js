@@ -78,7 +78,6 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
     const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
     const availableScreen = conv.available.surfaces.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    console.log("screen "+availableScreen);
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
         var response = null;
         if(!message){
@@ -88,12 +87,20 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
             conv.ask(new Suggestions(['hi']));
         }else{
             response = buildResponse(false);
-            if(response.list && screen){
-                conv.ask(response.ask);
-                conv.ask(response.list);
-            }else if(availableScreen){
-                console.log("hay dispositivos con pantalla");
-            }else{
+            if(response.list){
+                if(screen){
+                    conv.ask(response.ask);
+                    conv.ask(response.list);
+                }else if(availableScreen){
+                    var context = response.ask;
+                    var notification = 'Choices';
+                    var capabilities = ['actions.capability.SCREEN_OUTPUT'];
+                    conv.ask(new NewSurface({context, notification, capabilities}));
+                }else{
+                    conv.ask(response.ask);
+                }
+            }
+            else{
                 conv.ask(response);
             }
         }
@@ -128,6 +135,15 @@ app.intent('actions.intent.TEXT', (conv, input) => {
         }));
     });
 });
+
+app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
+    if (newSurface.status === 'OK') {
+        console.log(input);
+      conv.close("Muy bien");
+    } else {
+      conv.close(`Ok, I understand. You don't want to see pictures. Bye`);
+    }
+  });
 
 var talkToChat = function(input, userId){
     return new Promise(function (resolve, reject){
