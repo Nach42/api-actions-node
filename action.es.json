@@ -1,0 +1,38 @@
+{
+    "actions": [
+      {
+        "description": "Default Welcome Intent",
+        "name": "MAIN",
+        "fulfillment": {
+          "conversationName": "conv"
+        },
+        "intent": {
+          "name": "actions.intent.MAIN",
+          "trigger": {
+            "queryPatterns": [
+              "hablar con Tech Buyer",
+              "hablar con tech buyer",
+              "conversar con Tech Buyer"
+            ]
+          }
+        }
+      },
+      {
+        "description": "Everything Else Intent",
+        "name": "allElse",
+        "fulfillment": {
+          "conversationName": "conv"
+        },
+        "intent": {
+          "name": "actions.intent.TEXT"
+        }
+      }
+    ],
+    "conversations": {
+      "conv": {
+        "name": "conv",
+        "url": "https://api-actions-node.herokuapp.com/text"
+      }
+    },
+    "locale": "es"
+  }

@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const webhook = require('./webhook.js');
 const Promise = require('promise');
+const i18n = require('i18n');
 const {
     actionssdk,
     MediaObject,
@@ -35,7 +36,7 @@ app.intent('actions.intent.MAIN', conv => {
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
         const payload = conv.user.profile.payload;
-        conv.ask(`Hi ${payload.name}. What do you want to do next?`)
+        conv.ask(i18n.__(`Hi ${payload.name}. What do you want to do next?`))
     } else {
         conv.ask(`I won't be able to save your data, but what do you want to do next?`)
     }
@@ -197,7 +198,10 @@ var buildResponse = function(media){
                 var items = {};
                 for (var i = 0; i < choices.length; i++) {
                     items[choices[i]] = {
-                        title: choices[i] 
+                        title: choices[i],
+                        synonyms: [
+                            choices[i].toLowerCase()
+                          ],
                     };
                 };
                 response.ask = title;

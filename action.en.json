@@ -10,9 +10,8 @@
         "name": "actions.intent.MAIN",
         "trigger": {
           "queryPatterns": [
-            "talk to my test app",
-            "talk to Dr. Pepe",
-            "talk to doctor Pepe"
+            "talk to Tech Buyer",
+            "talk to tech buyer"
           ]
         }
       }
