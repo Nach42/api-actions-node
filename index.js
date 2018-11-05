@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const webhook = require('./webhook.js');
 const Promise = require('promise');
+const i18n = require('i18n');
 const {
     actionssdk,
     MediaObject,
@@ -18,6 +19,11 @@ var app = actionssdk({clientId: '538506846675-koeib2bosg44cjmraqbfbaq638q5mqnb.a
 var express_app = express();
 express_app.use(bodyParser.urlencoded({extended: true}));
 express_app.use(bodyParser.json());
+i18n.configure({
+    locales: ['en-US', 'es-ES'],
+    directory: __dirname + '/locales',
+    defaultLocale: 'en-US'
+  });
 
 var metadata = {
     waitForMoreResponsesMs: 500,
@@ -25,9 +31,9 @@ var metadata = {
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
 var message = null;
-var queue = null;
 
 app.intent('actions.intent.MAIN', conv => {
+    i18n.setLocale(conv.user.locale);
     console.log("Main");
     conv.ask(new SignIn());
 });
@@ -35,7 +41,8 @@ app.intent('actions.intent.MAIN', conv => {
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
         const payload = conv.user.profile.payload;
-        conv.ask(`Hi ${payload.name}. What do you want to do next?`)
+        //conv.ask(`Hi ${payload.name}. What do you want to do next?`)
+        conv.ask(i18n.__(welcome));
     } else {
         conv.ask(`I won't be able to save your data, but what do you want to do next?`)
     }
