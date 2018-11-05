@@ -77,7 +77,7 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
 app.intent('actions.intent.MEDIA_STATUS', conv => {
     const mediaStatus = conv.arguments.get('MEDIA_STATUS');
     const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    const availableScreen = conv.availableSurfacesCapabilities.has('actions.capability.SCREEN_OUTPUT');
+    const availableScreen = conv.available.surfaces.capabilities.has('actions.capability.SCREEN_OUTPUT');
     console.log("screen "+availableScreen);
     if (mediaStatus && mediaStatus.status === 'FINISHED') {
         var response = null;
