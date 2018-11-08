@@ -229,7 +229,7 @@ var buildResponse = function(media){
             }else{
                 response = new SimpleResponse({
                     text: title+" "+choices[0],
-                    speech: choices[0]
+                    speech: title+" "+choices[0]
                 });
             }            
         }else{
