@@ -62,12 +62,12 @@ app.intent('actions.intent.OPTION', (conv, params, option) => {
                 if(screen){
                     conv.ask(response.ask);
                     conv.ask(response.list);
-                /*}else if(availableScreen){
+                }else if(availableScreen){
                     queue = response;
                     var context = "I have some choices for you";
                     var notification = 'Choices';
                     var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));*/
+                    conv.ask(new NewSurface({context, notification, capabilities}));
                 }else{
                     var list = speechList(response);
                     conv.ask(list.ask);
