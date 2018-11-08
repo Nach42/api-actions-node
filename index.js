@@ -228,7 +228,7 @@ var buildResponse = function(media){
                 });
             }else{
                 response = new SimpleResponse({
-                    text: choices[0],
+                    text: title+" "+choices[0],
                     speech: choices[0]
                 });
             }            
