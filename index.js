@@ -31,6 +31,7 @@ var metadata = {
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
 var message = null;
+var queue = null;
 
 app.intent('actions.intent.MAIN', conv => {
     i18n.setLocale(conv.user.locale);
@@ -112,12 +113,12 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
                 if(screen){
                     conv.ask(response.ask);
                     conv.ask(response.list);
-                /*}else if(availableScreen){
+                }else if(availableScreen){
                     queue = response;
                     var context = "I have some choices for you";
                     var notification = 'Choices';
                     var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));*/
+                    conv.ask(new NewSurface({context, notification, capabilities}));
                 }else{
                     var list = speechList(response);
                     conv.ask(list.ask);
@@ -130,6 +131,15 @@ app.intent('actions.intent.MEDIA_STATUS', conv => {
         }
     } else {
         conv.close(`No hay respuestas`);
+    }
+});
+
+app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
+    if (newSurface.status === 'OK') {
+      conv.ask(response.ask);
+      conv.ask(response.list);
+    } else {
+      conv.close(`Ok, I understand. You don't want to see pictures. Bye`);
     }
 });
 
