@@ -228,8 +228,8 @@ var buildResponse = function(media){
                 });
             }else{
                 response = new SimpleResponse({
-                    text: title+"\n"+choices[0],
-                    speech: title+"\n"+choices[0]
+                    text: title+":\n"+choices[0],
+                    speech: title+":\n"+choices[0]
                 });
             }            
         }else{
