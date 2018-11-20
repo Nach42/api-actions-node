@@ -1,8 +1,13 @@
 'use strict'
 
 const express = require('express');
+const _ = require('underscore');
 const bodyParser = require('body-parser');
 const webhook = require('./webhook.js');
+const PubSub = require('pubsub-js');
+const Joi = require('joi');
+const MessageModel = require('./MessageModel.js')(Joi);
+const messageModelUtil = require('./messageModelUtil.js');
 const Promise = require('promise');
 const i18n = require('i18n');
 const {
@@ -15,6 +20,9 @@ const {
     NewSurface,
     Image
 } = require('actions-on-google');
+
+PubSub.immediateExceptions = true;
+
 var app = actionssdk({clientId: '538506846675-koeib2bosg44cjmraqbfbaq638q5mqnb.apps.googleusercontent.com'});
 var express_app = express();
 express_app.use(bodyParser.urlencoded({extended: true}));
@@ -26,13 +34,34 @@ i18n.configure({
   });
 
 var metadata = {
-    waitForMoreResponsesMs: 500,
+    allowConfigUpdate: true,
+    waitForMoreResponsesMs: 200,
     channelSecretKey: '2ngdurGTGYRMW6dc5zfPwQlMmNtFhiE4',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
-var message = null;
-var queue = null;
+var randomIntInc = function (low, high) {
+    return Math.floor(Math.random() * (high - low + 1) + low);
+};
+  
+var setConfig = function (config) {
+    metadata = _.extend(metadata, _.pick(config, _.keys(metadata)));
+}
+  
+var sendWebhookMessageToBot = function (channelUrl, channelSecretKey, userId, messagePayload, additionalProperties, callback) {
+    webhook.messageToBot(channelUrl, channelSecretKey, userId, messagePayload, additionalProperties, callback);
+};
 
+if (metadata.allowConfigUpdate) {
+    express_app.put('/config', bodyParser.json(), function (req, res) {
+      let config = req.body;
+      if (config) {
+        setConfig(config);
+      }
+      res.sendStatus(200).send();
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 app.intent('actions.intent.MAIN', conv => {
     i18n.setLocale(conv.user.locale);
     console.log("Main");
@@ -50,208 +79,93 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     }
 });
 
-app.intent('actions.intent.OPTION', (conv, params, option) => {
-    const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
-    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    const availableScreen = conv.available.surfaces.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    var userId = conv.user.profile.payload.email;
-    return talkToChat(option, userId).then(function (value){
-        if(message){
-            var response = buildResponse(false);
-            if(response.list){
-                if(screen){
-                    conv.ask(response.ask);
-                    conv.ask(response.list);
-                }else if(availableScreen){
-                    queue = response;
-                    var context = "I have some choices for you";
-                    var notification = 'Choices';
-                    var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));
-                }else{
-                    var list = speechList(response);
-                    conv.ask(list.ask);
-                    conv.ask(list.choices);
-                }
-            }else{
-                conv.ask(response);
-            }
-        }else if(hasMediaPlayback){
-            var response = buildResponse(true);
-            conv.ask(" ");
-            conv.ask(response);
-            conv.ask(new Suggestions(['hi']));
-        }else{
-            conv.ask(new SimpleResponse({
-                text: "Mala suerte",
-                speech: "Mala suerte"
-            }));   
-        }
-    }).catch(function(error){
-        console.log(error);
-        conv.ask(new SimpleResponse({
-            text: error.error,
-            speech: error.error
-        }));
-    });
-});
-
-app.intent('actions.intent.MEDIA_STATUS', conv => {
-    const mediaStatus = conv.arguments.get('MEDIA_STATUS');
-    const screen = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    const availableScreen = conv.available.surfaces.capabilities.has('actions.capability.SCREEN_OUTPUT');
-    if (mediaStatus && mediaStatus.status === 'FINISHED') {
-        var response = null;
-        if(!message){
-            response = buildResponse(true);
-            conv.ask(" ");
-            conv.ask(response);
-            conv.ask(new Suggestions(['hi']));
-        }else{
-            response = buildResponse(false);
-            if(response.list){
-                if(screen){
-                    conv.ask(response.ask);
-                    conv.ask(response.list);
-                }else if(availableScreen){
-                    queue = response;
-                    var context = "I have some choices for you";
-                    var notification = 'Choices';
-                    var capabilities = ['actions.capability.SCREEN_OUTPUT'];
-                    conv.ask(new NewSurface({context, notification, capabilities}));
-                }else{
-                    var list = speechList(response);
-                    conv.ask(list.ask);
-                    conv.ask(list.choices);
-                }
-            }
-            else{
-                conv.ask(response);
-            }
-        }
-    } else {
-        conv.close(`No hay respuestas`);
-    }
-});
-
-app.intent('actions.intent.NEW_SURFACE', (conv, input, newSurface) => {
-    if (newSurface.status === 'OK') {
-      conv.ask(response.ask);
-      conv.ask(response.list);
-    } else {
-      conv.close(`Ok, I understand. You don't want to see pictures. Bye`);
-    }
-});
-
 app.intent('actions.intent.TEXT', (conv, input) => {
-    const hasMediaPlayback = conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO');
     var userId = conv.user.profile.payload.email;
-    return talkToChat(input, userId).then(function (value){
-        if(message){
-            conv.ask(buildResponse(false));
-        }else if(hasMediaPlayback){
-            var response = buildResponse(true);
-            conv.ask(" ");
-            conv.ask(response);
-            conv.ask(new Suggestions(['hi']));
-        }else{
-            conv.ask(new SimpleResponse({
-                text: "Mala suerte",
-                speech: "Mala suerte"
-            }));   
-        }
-    }).catch(function(error){
-        console.log(error);
-        conv.ask(new SimpleResponse({
-            text: error.error,
-            speech: error.error
-        }));
-    });
-});
 
-var speechList = function(response){
-    var list = response.list.inputValueData.listSelect.items;
-    var res = {};
-    var choices = "";
-    for (var i = 0; i < list.length; i++) {
-        choices += list[i].optionInfo.key+", ";
-    }
-    choices = choices.substring(0, choices.length - 2);
-    res.ask = response.ask;
-    res.choices = choices;
-    return res;
-};
-
-var talkToChat = function(input, userId){
-    return new Promise(function (resolve, reject){
-        if(userId && input){
-            webhook.messageToBot(metadata.channelUrl, metadata.channelSecretKey, userId, input, function(value){
-                if(value){
-                    resolve(value.msg);
-                }else{
-                    console.log("error");
-                    reject({"error": "Error por cosas"});   
-                }
+    if (metadata.channelUrl && metadata.channelSecretKey && userId) {
+        const userIdTopic = userId;
+        var respondedToGoogle = false;
+        var additionalProperties = {
+            "profile": {
+                "clientType": "googleHome"
+            }
+        };
+        var sendToGoogle = function (resolve, reject) {
+            if (!respondedToGoogle) {
+                respondedToGoogle = true;
+                console.log('Prepare to send to Google');
+                resolve();
+                PubSub.unsubscribe(userIdTopic);
+            } else {
+                console.log("Already sent response");
+            }
+        };
+        var navigableResponseToGoogle = function (resp) {
+            var respModel;
+            if (resp.messagePayload) {
+                respModel = new MessageModel(resp.messagePayload);
+            } else {
+                // handle 1.0 webhook format as well
+                respModel = new MessageModel(resp);
+            }
+            let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
+            console.log("Message to Google (navigable):", messageToGoogle)
+            conv.ask(messageToGoogle);
+        };
+        var sendMessageToBot = function (messagePayload) {
+            console.log('Creating new promise for', messagePayload);
+            return new Promise(function (resolve, reject) {
+                var commandResponse = function (msg, data) {
+                    console.log('Received callback message from webhook channel');
+                    var resp = data;
+                    console.log('Parsed Message Body:', resp);
+                    if (!respondedToGoogle) {
+                        navigableResponseToGoogle(resp);
+                    } else {
+                        console.log("Already processed response");
+                        return;
+                    }
+                    if (metadata.waitForMoreResponsesMs) {
+                        _.delay(function () {
+                            sendToGoogle(resolve, reject);
+                        }, metadata.waitForMoreResponsesMs);
+                    } else {
+                        sendToGoogle(resolve, reject);
+                    }
+                };
+                var token = PubSub.subscribe(userIdTopic, commandResponse);
+                sendWebhookMessageToBot(metadata.channelUrl, metadata.channelSecretKey, userId, messagePayload, additionalProperties, function (err) {
+                    if (err) {
+                        console.log("Failed sending message to Bot");
+                        alexa_res.say("Failed sending message to Bot.  Please review your bot configuration.");
+                        reject();
+                        PubSub.unsubscribe(userIdTopic);
+                    }
+                });
             });
-        }else{
-            reject({"error": "userId or input is wrong."});
-        }
-    });
-};
-
-var buildResponse = function(media){
-    var response = {};
-    if(media){
-        response = new MediaObject({
-            name: 'Processing',
-            url: 'http://img.rsantrod.es/sonido/1second.mp3'
+        };
+        var handleInput = function (input) {
+            var commandMsg = MessageModel.textConversationMessage(input);
+            return sendMessageToBot(commandMsg);
+        };
+        return handleInput(input);
+    } else {
+        console.log('fuera del if');
+        _.defer(function () {
+            conv.ask("I don't understand. Could you please repeat what you want?");
         });
     }
-    else if(!media){
-        if(message.choices){
-            var title = message.text;
-            var choices = message.choices;
-            if(choices.length > 1){
-                var items = {};
-                for (var i = 0; i < choices.length; i++) {
-                    items[choices[i]] = {
-                        title: choices[i],
-                        synonyms: [
-                            choices[i].toLowerCase()
-                          ],
-                    };
-                };
-                response.ask = title;
-                response.list = new List({
-                    title: title,
-                    items: items
-                });
-            }else{
-                response = new SimpleResponse({
-                    text: title+":\n"+choices[0],
-                    speech: title+":\n"+choices[0]
-                });
-            }            
-        }else{
-            response = new SimpleResponse({
-                text: message.text,
-                speech: message.text
-            }); 
-        }    
-        message = null;
-    }
-    return response;
-};
+});
     
 express_app.post('/webhook', bodyParser.json(), (req, res)=>{
     if (webhook.verifyMessageFromBot(req.get('X-Hub-Signature'), req.body, metadata.channelSecretKey)) {
-        console.log("todo bien");
-        message = req.body;
+        var message = req.body;
         const userId = req.body.userId;
         if (!userId) {
             return res.status(400).send('Missing User ID');
         }
         res.sendStatus(200);
+        PubSub.publish(userId, message);
     } else {
         console.log("Todo mal");
         res.sendStatus(403);

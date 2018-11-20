@@ -15,11 +15,13 @@
     "crypto": "^1.0.1",
     "express": "^4.16.3",
     "i18n": "^0.8.3",
+    "joi": "^14.1.0",
     "nodemon": "^1.18.4",
     "promise": "^8.0.2",
     "pubsub-js": "^1.7.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "requestify": "^0.2.5"
+    "requestify": "^0.2.5",
+    "underscore": "^1.9.1"
   }
 }

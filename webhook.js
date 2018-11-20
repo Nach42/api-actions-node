@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const request = require('request');
+const _ = require('underscore');
 const Promise = require('promise');
 
 function verifyMessageFromBot(signature, msgBody, secretKey) {
@@ -30,9 +31,14 @@ function buildSignature(buf, secret) {
     return msg_hmac_digest;
 }
 
-function messageToBot(channelUrl, channelSecretKey, userId, input, callback) {
-    var outMsg = {userId:userId, text:input};
-    
+function messageToBot(channelUrl, channelSecretKey, userId, input, additionalProperties, callback) {
+    var outMsg = {
+        userId:userId,
+        messagePayload: input
+    };
+    if (additionalProperties){
+        _.extend(outMsg, additionalProperties);
+    }
     const body = Buffer.from(JSON.stringify(outMsg), 'utf8');
     const headers = {};
     headers['Content-Type'] = 'application/json; charset=utf-8';
@@ -47,11 +53,9 @@ function messageToBot(channelUrl, channelSecretKey, userId, input, callback) {
         callback: function(err, res, body) {
             if (err) {                   
                 console.log('err: '+err);
-                callback(null);
+                callback(err);
             } else {
-                console.log('Mensaje enviado: ' + JSON.stringify(res));
-                console.log('Mensaje enviado 2: ' + JSON.stringify(body));
-                callback({"msg": "OK"});
+                callback(null);
             }
         }
     });
