@@ -33,7 +33,7 @@ function actionToText(action, actionPrefix) {
   return actionText;
 }
 function actionsToText(actions, prompt, actionPrefix) {
-  var actionsText = prompt || 'You can choose from the following actions: ';
+  var actionsText = prompt;
   actions.forEach(function (action, index) {
     actionsText = actionsText + actionToText(action, actionPrefix);
     if (index < actions.length - 1) {
@@ -46,7 +46,7 @@ function textMessageToText(resp) {
   var result = "";
   result = trailingPeriod(resp.text);
   if (resp.actions && resp.actions.length > 0) {
-    result = result + actionsToText(resp.actions, 'You can choose from the following options: ');
+    result = result + actionsToText(resp.actions, '');
   }
   if (resp.globalActions && resp.globalActions.length > 0) {
     result = result + actionsToText(resp.globalActions, 'The following global actions are available: ');
