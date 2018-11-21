@@ -137,7 +137,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
                 sendWebhookMessageToBot(metadata.channelUrl, metadata.channelSecretKey, userId, messagePayload, additionalProperties, function (err) {
                     if (err) {
                         console.log("Failed sending message to Bot");
-                        alexa_res.say("Failed sending message to Bot.  Please review your bot configuration.");
+                        conv.say("Failed sending message to Bot.  Please review your bot configuration.");
                         reject();
                         PubSub.unsubscribe(userIdTopic);
                     }
