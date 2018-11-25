@@ -86,15 +86,13 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
 
 app.intent('actions.intent.TEXT', (conv, input) => {
     conv.ask(new SignIn());
-    var userId = conv.user.profile.payload.email;
-
+    //var userId = conv.user.profile.payload.email;
+    var userId = "asd234";
     if (metadata.channelUrl && metadata.channelSecretKey && userId) {
         const userIdTopic = userId;
         var respondedToGoogle = false;
         var additionalProperties = {
-            "profile": {
-                "clientType": "googleHome"
-            }
+            "profile": user
         };
         var sendToGoogle = function (resolve, reject) {
             if (!respondedToGoogle) {
