@@ -70,7 +70,7 @@ app.intent('actions.intent.MAIN', conv => {
 
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
-        const payload = conv.user.profile.payload;
+        const profile = conv.user.profile.payload;
         user = {
             "firstName": profile.given_name,
             "lastName": profile.family_name,
