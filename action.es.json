@@ -10,9 +10,9 @@
           "name": "actions.intent.MAIN",
           "trigger": {
             "queryPatterns": [
-              "hablar con Tech Buyer",
-              "hablar con tech buyer",
-              "conversar con Tech Buyer"
+              "hablar con Asistente de compras",
+              "hablar con asistente de compras",
+              "conversar con Asistente de compras"
             ]
           }
         }

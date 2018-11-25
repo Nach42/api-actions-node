@@ -61,18 +61,23 @@ if (metadata.allowConfigUpdate) {
     });
 }
 
+var user = null;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 app.intent('actions.intent.MAIN', conv => {
     i18n.setLocale(conv.user.locale);
-    console.log("Main");
     conv.ask(new SignIn());
 });
 
 app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     if (signin.status === 'OK') {
         const payload = conv.user.profile.payload;
-        //conv.ask(`Hi ${payload.name}. What do you want to do next?`)
-        conv.ask(i18n.__("welcome", payload.name));
+        user = {
+            "firstName": profile.given_name,
+            "lastName": profile.family_name,
+            "email": profile.email,
+            "clientType": 'googleHome'
+        };
+        conv.ask(i18n.__("welcome", user.firstName));
     } else {
         conv.ask(i18n.__("NotWelcome"))
         conv.ask(new SignIn())
