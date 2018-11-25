@@ -85,6 +85,7 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
 });
 
 app.intent('actions.intent.TEXT', (conv, input) => {
+    conv.ask(new SignIn());
     var userId = conv.user.profile.payload.email;
 
     if (metadata.channelUrl && metadata.channelSecretKey && userId) {
