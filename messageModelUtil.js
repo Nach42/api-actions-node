@@ -66,18 +66,18 @@ function cardToText(card, cardPrefix) {
     cardText = trailingPeriod(cardText + card.description);
   }
   if (card.actions && card.actions.length > 0) {
-    cardText = cardText + actionsToText(card.actions, 'The following actions are available for this card: ');
-    cardText = cardText + ' Or choose Return';
+    cardText = cardText + actionsToText(card.actions, '');
+    cardText = cardText + ' ';
   }
   else {
-    cardText = cardText + ' You could choose Return';
+    cardText = cardText + ' ';
   }
   return cardText;
 }
 function cardsSummaryToText(cards, prompt) {
-  var cardsText = prompt || 'You can choose from the following cards for more information: ';
+  var cardsText = prompt || '';
   cards.forEach(function (card, index) {
-    cardsText = cardsText + 'Card ' + card.title;
+    cardsText = cardsText + '' + card.title + 'oferta: '+ card.description;
     if (index < cards.length - 1) {
       cardsText = cardsText + ', ';
     }
