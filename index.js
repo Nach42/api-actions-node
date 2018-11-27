@@ -78,6 +78,10 @@ app.intent('actions.intent.SIGN_IN', (conv, input, signin) => {
     }
 });
 
+app.intent('actions.intent.CANCEL', (conv) => {
+    conv.close(i18n.__("Cancel"));
+});
+
 app.intent('actions.intent.TEXT', (conv, input) => {
     var userId = user.email;
     if (metadata.channelUrl && metadata.channelSecretKey && userId) {

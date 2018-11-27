@@ -26,6 +26,27 @@
         "intent": {
           "name": "actions.intent.TEXT"
         }
+      },
+      {
+        "description": "Cancel Intent",
+        "name": "Cancel",
+        "fulfillment": {
+          "conversationName": "conv"
+        },
+        "intent": {
+          "name": "actions.intent.CANCEL",
+          "trigger": {
+            "queryPatterns": [
+              "adiós",
+              "salir",
+              "nos vemos pronto",
+              "hasta luego",
+              "salir de tech buyer",
+              "salir del asistente",
+              "cerrar"
+            ]
+          }
+        }
       }
     ],
     "conversations": {
