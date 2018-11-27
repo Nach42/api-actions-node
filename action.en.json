@@ -25,29 +25,6 @@
       "intent": {
         "name": "actions.intent.TEXT"
       }
-    },
-    {
-      "description": "Cancel Intent",
-      "name": "Cancel",
-      "fulfillment": {
-        "conversationName": "conv"
-      },
-      "intent": {
-        "name": "actions.intent.CANCEL",
-        "trigger": {
-          "queryPatterns": [
-            "goodbye",
-            "exit",
-            "go out",
-            "I want to gou out",
-            "leave",
-            "leave the app",
-            "close app",
-            "close",
-            "I want to leave"
-          ]
-        }
-      }
     }
   ],
   "conversations": {

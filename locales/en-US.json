@@ -1,5 +1,4 @@
 {
     "welcome": "Hi %s. Welcome to Tech Buyer, start creating a list!",
-    "NotWelcome": "You need to log in to continue",
-    "Cancel": "Ok. Have a fun day, see you later."
+    "NotWelcome": "You need to log in to continue"
 }
