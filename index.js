@@ -12,20 +12,14 @@ const Promise = require('promise');
 const i18n = require('i18n');
 const {
     actionssdk,
-    MediaObject,
-    SimpleResponse,
-    Suggestions,
-    List,
-    SignIn,
-    NewSurface,
-    Image
+    SignIn
 } = require('actions-on-google');
 
 PubSub.immediateExceptions = true;
 
 var app = actionssdk({clientId: '538506846675-koeib2bosg44cjmraqbfbaq638q5mqnb.apps.googleusercontent.com'});
 var express_app = express();
-express_app.use(bodyParser.urlencoded({extended: true}));
+// express_app.use(bodyParser.urlencoded({extended: true}));
 express_app.use(bodyParser.json());
 i18n.configure({
     locales: ['en-US', 'es-ES'],
@@ -39,9 +33,9 @@ var metadata = {
     channelSecretKey: '2ngdurGTGYRMW6dc5zfPwQlMmNtFhiE4',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
-var randomIntInc = function (low, high) {
-    return Math.floor(Math.random() * (high - low + 1) + low);
-};
+// var randomIntInc = function (low, high) {
+//     return Math.floor(Math.random() * (high - low + 1) + low);
+// };
   
 var setConfig = function (config) {
     metadata = _.extend(metadata, _.pick(config, _.keys(metadata)));
