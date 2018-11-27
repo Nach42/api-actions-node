@@ -77,7 +77,7 @@ function cardToText(card, cardPrefix) {
 function cardsSummaryToText(cards, prompt) {
   var cardsText = prompt || '';
   cards.forEach(function (card, index) {
-    cardsText = cardsText + '' + card.title + 'oferta: '+ card.description;
+    cardsText = cardsText + '' + card.title + ', oferta: '+ card.description;
     if (index < cards.length - 1) {
       cardsText = cardsText + ', ';
     }
