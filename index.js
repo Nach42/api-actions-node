@@ -97,16 +97,20 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             }
         };
         var navigableResponseToGoogle = function (resp) {
-            var respModel;
-            if (resp.messagePayload) {
-                respModel = new MessageModel(resp.messagePayload);
-            } else {
-                // handle 1.0 webhook format as well
-                respModel = new MessageModel(resp);
+            if(res.messagePayload.text.toUpperCase().includes("SEE YOU") || res.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
+                conv.close(i18n.__("Cancel"));
+            }else{
+                var respModel;
+                if (resp.messagePayload) {
+                    respModel = new MessageModel(resp.messagePayload);
+                } else {
+                    // handle 1.0 webhook format as well
+                    respModel = new MessageModel(resp);
+                }
+                let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
+                console.log("Message to Google (navigable):", messageToGoogle)
+                conv.ask(messageToGoogle);
             }
-            let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
-            console.log("Message to Google (navigable):", messageToGoogle)
-            conv.ask(messageToGoogle);
         };
         var sendMessageToBot = function (messagePayload) {
             console.log('Creating new promise for', messagePayload);
