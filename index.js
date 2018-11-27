@@ -97,7 +97,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             }
         };
         var navigableResponseToGoogle = function (resp) {
-            if(res.messagePayload.text.toUpperCase().includes("SEE YOU") || res.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
+            if(resp.messagePayload.text.toUpperCase().includes("SEE YOU") || resp.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
                 conv.close(i18n.__("Cancel"));
             }else{
                 var respModel;
