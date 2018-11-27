@@ -97,8 +97,21 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             }
         };
         var navigableResponseToGoogle = function (resp) {
-            if(resp.messagePayload.text.toUpperCase().includes("SEE YOU") || resp.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
-                conv.close(i18n.__("Cancel"));
+            if(resp.type == 'text'){
+                if(resp.messagePayload.text.toUpperCase().includes("SEE YOU") || resp.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
+                    conv.close(i18n.__("Cancel"));
+                }else{
+                    var respModel;
+                    if (resp.messagePayload) {
+                        respModel = new MessageModel(resp.messagePayload);
+                    } else {
+                        // handle 1.0 webhook format as well
+                        respModel = new MessageModel(resp);
+                    }
+                    let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
+                    console.log("Message to Google (navigable):", messageToGoogle)
+                    conv.ask(messageToGoogle);
+                }
             }else{
                 var respModel;
                 if (resp.messagePayload) {
