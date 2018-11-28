@@ -165,19 +165,16 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             return sendMessageToBot(commandMsg);
         };
         var checkNumber = function(input){
-            var result;
+            var result = input;
             if(input.includes('uno') || input.includes('una')){
-                result = input.replace('una', 1);
-                console.log("cambiando una: " + result);
-                result = input.replace('uno', 1);
+                result = result.replace('una', 1);
+                result = result.replace('uno', 1);
             }else if(input.includes('cuatro')){
-                result = input.replace('cuatro', 4);
+                result = result.replace('cuatro', 4);
             }
-            console.log(result);
             return result;
         }
         input = checkNumber(input);
-        console.log(input);
         return handleInput(input);
     } else {
         console.log('fuera del if');
