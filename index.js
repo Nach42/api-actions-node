@@ -168,7 +168,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             var result;
             if(input.includes('uno') || input.includes('una')){
                 result = input.replace('una', 1);
-                console.log(input);
+                console.log("cambiando una: " + result);
                 result = input.replace('uno', 1);
             }else if(input.includes('cuatro')){
                 result = input.replace('cuatro', 4);
