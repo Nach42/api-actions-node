@@ -103,6 +103,8 @@ app.intent('actions.intent.TEXT', (conv, input) => {
                 if(resp.messagePayload.text.toUpperCase().includes("SEE YOU") || resp.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
                     console.log("cancel");
                     conv.close(i18n.__("Cancel"));
+                }else if(resp.messagePayload.text.toUpperCase().includes("OOPS")){
+                    conv.close(i18n.__("Error"));
                 }else{
                     var respModel;
                     if (resp.messagePayload) {
