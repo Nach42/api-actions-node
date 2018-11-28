@@ -175,6 +175,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             return result;
         }
         input = checkNumber(input);
+        console.log(input);
         return handleInput(input);
     } else {
         console.log('fuera del if');
