@@ -33,6 +33,7 @@ var metadata = {
     channelSecretKey: '2ngdurGTGYRMW6dc5zfPwQlMmNtFhiE4',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
+
 // var randomIntInc = function (low, high) {
 //     return Math.floor(Math.random() * (high - low + 1) + low);
 // };
@@ -163,6 +164,17 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             var commandMsg = MessageModel.textConversationMessage(input);
             return sendMessageToBot(commandMsg);
         };
+        var checkNumber = function(input){
+            var result = '';
+            if(input.includes('uno') || input.includes('una')){
+                result = input.replace('una', 1);
+                result = input.replace('uno', 1);
+            }else if(input.includes('cuatro')){
+                result = input.replace('cuatro', 4);
+            }
+            return result;
+        }
+        input = checkNumber(input);
         return handleInput(input);
     } else {
         console.log('fuera del if');
