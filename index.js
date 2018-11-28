@@ -164,17 +164,6 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             var commandMsg = MessageModel.textConversationMessage(input);
             return sendMessageToBot(commandMsg);
         };
-        var checkNumber = function(input){
-            var result = input;
-            if(input.includes('uno') || input.includes('una')){
-                result = result.replace('una', 1);
-                result = result.replace('uno', 1);
-            }else if(input.includes('cuatro')){
-                result = result.replace('cuatro', 4);
-            }
-            return result;
-        }
-        input = checkNumber(input);
         return handleInput(input);
     } else {
         console.log('fuera del if');
