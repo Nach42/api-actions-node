@@ -165,6 +165,7 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             return sendMessageToBot(commandMsg);
         };
         var checkNumber = function(input){
+            console.log(input);
             var result;
             if(input.includes('uno') || input.includes('una')){
                 result = input.replace('una', 1);
