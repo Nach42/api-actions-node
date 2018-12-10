@@ -98,36 +98,27 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             }
         };
         var navigableResponseToGoogle = function (resp) {
-            if(resp.messagePayload.type == 'text'){
+            var flag = true;
+            var respModel;
+            if (resp.messagePayload) {
+                respModel = new MessageModel(resp.messagePayload);
+            } else {
+                // handle 1.0 webhook format as well
+                respModel = new MessageModel(resp);
+            }
+            if(respModel._messagePayload.type == 'text'){
                 console.log("text");
-                if(resp.messagePayload.text.toUpperCase().includes("SEE YOU") || resp.messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
-                    console.log("cancel");
+                if(respModel._messagePayload.text.toUpperCase().includes("SEE YOU") || respModel._messagePayload.text.toUpperCase().includes("HASTA LUEGO")){
+                    flag = false;
                     conv.close(i18n.__("Cancel"));
-                }else if(resp.messagePayload.text.toUpperCase().includes("OOPS")){
+                }else if(respModel._messagePayload.text.toUpperCase().includes("OOPS")){
                     conv.close(i18n.__("Error"));
-                }else{
-                    var respModel;
-                    if (resp.messagePayload) {
-                        respModel = new MessageModel(resp.messagePayload);
-                    } else {
-                        // handle 1.0 webhook format as well
-                        respModel = new MessageModel(resp);
-                    }
+                }
+                if(flag){
                     let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
                     console.log("Message to Google (navigable):", messageToGoogle)
                     conv.ask(messageToGoogle);
                 }
-            }else{
-                var respModel;
-                if (resp.messagePayload) {
-                    respModel = new MessageModel(resp.messagePayload);
-                } else {
-                    // handle 1.0 webhook format as well
-                    respModel = new MessageModel(resp);
-                }
-                let messageToGoogle = messageModelUtil.convertRespToText(respModel.messagePayload());
-                console.log("Message to Google (navigable):", messageToGoogle)
-                conv.ask(messageToGoogle);
             }
         };
         var sendMessageToBot = function (messagePayload) {
