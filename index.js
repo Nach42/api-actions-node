@@ -29,7 +29,7 @@ i18n.configure({
 
 var metadata = {
     allowConfigUpdate: true,
-    waitForMoreResponsesMs: 200,
+    waitForMoreResponsesMs: 400,
     channelSecretKey: '2ngdurGTGYRMW6dc5zfPwQlMmNtFhiE4',
     channelUrl: 'https://amce2bmxp-univcreditsavt.mobile.ocp.oraclecloud.com:443/connectors/v1/tenants/idcs-188833f670f149a3ac2892ac9359b66e/listeners/webhook/channels/FF688C19-69D0-47A2-979B-B92D9C0C8878'
 };
