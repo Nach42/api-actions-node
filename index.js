@@ -88,14 +88,10 @@ app.intent('actions.intent.TEXT', (conv, input) => {
             "profile": user
         };
         var sendToGoogle = function (resolve, reject) {
-            if (!respondedToGoogle) {
                 respondedToGoogle = true;
                 console.log('Prepare to send to Google');
                 resolve();
                 PubSub.unsubscribe(userIdTopic);
-            } else {
-                console.log("Already sent response");
-            }
         };
         var navigableResponseToGoogle = function (resp) {
             var flag = true;
